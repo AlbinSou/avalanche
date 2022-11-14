@@ -127,6 +127,8 @@ class MultiTaskModule(DynamicModule):
         self.known_train_tasks_labels = self.known_train_tasks_labels.union(
             set(task_labels)
         )
+        pass
+
 
     def forward(
         self, x: torch.Tensor, task_labels: torch.Tensor
@@ -228,9 +230,10 @@ class IncrementalClassifier(DynamicModule):
         """
         in_features = self.classifier.in_features
         old_nclasses = self.classifier.out_features
-        curr_classes = experience.classes_in_this_experience
-        new_nclasses = max(self.classifier.out_features, max(curr_classes) + 1)
-
+        curr_classes = torch.unique(torch.tensor(experience.classes_in_this_experience))
+        new_nclasses = max(
+            self.classifier.out_features, max(curr_classes) + 1
+        )
         # update active_units mask
         if self.masking:
             if old_nclasses != new_nclasses:  # expand active_units mask

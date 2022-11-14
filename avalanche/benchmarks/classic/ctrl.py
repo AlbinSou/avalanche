@@ -43,6 +43,7 @@ def CTrL(
     path: Path = default_dataset_location(""),
     seed: int = None,
     n_tasks: int = None,
+    normalize: bool = True,
 ):
     """
     Gives access to the Continual Transfer Learning benchmark streams
@@ -81,7 +82,12 @@ def CTrL(
     for t_id, t in enumerate(
         tqdm(stream, desc=f"Loading {stream_name}"),
     ):
-        trans = transforms.Normalize(t.statistics["mean"], t.statistics["std"])
+
+        if normalize:
+            trans = transforms.Normalize(t.statistics["mean"], t.statistics["std"])
+        else:
+            trans = None
+
         for split, split_name, exp in zip(t.datasets, t.split_names, exps):
             samples, labels = split.tensors
             task_labels = [t.id] * samples.size(0)

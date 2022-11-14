@@ -4,3 +4,4 @@ from .wandb_logger import *
 from .text_logging import TextLogger
 from .interactive_logging import InteractiveLogger
 from .csv_logger import CSVLogger
+from .parallel_json_logger import ParallelJSONLogger

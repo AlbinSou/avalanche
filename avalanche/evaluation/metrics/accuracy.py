@@ -253,12 +253,12 @@ class MinibatchAccuracy(AccuracyPluginMetric):
     :class:`EpochAccuracy` instead.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of the MinibatchAccuracy metric.
         """
         super(MinibatchAccuracy, self).__init__(
-            reset_at="iteration", emit_at="iteration", mode="train"
+            reset_at="iteration", emit_at="iteration", mode="train", **kwargs,
         )
 
     def __str__(self):
@@ -275,13 +275,13 @@ class EpochAccuracy(AccuracyPluginMetric):
     the overall number of patterns encountered in that epoch.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of the EpochAccuracy metric.
         """
 
         super(EpochAccuracy, self).__init__(
-            reset_at="epoch", emit_at="epoch", mode="train"
+            reset_at="epoch", emit_at="epoch", mode="train", **kwargs,
         )
 
     def __str__(self):
@@ -299,13 +299,13 @@ class RunningEpochAccuracy(AccuracyPluginMetric):
     The metric resets its state after each training epoch.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of the RunningEpochAccuracy metric.
         """
 
         super(RunningEpochAccuracy, self).__init__(
-            reset_at="epoch", emit_at="iteration", mode="train"
+            reset_at="epoch", emit_at="iteration", mode="train", **kwargs,
         )
 
     def __str__(self):
@@ -319,12 +319,12 @@ class ExperienceAccuracy(AccuracyPluginMetric):
     This metric only works at eval time.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of ExperienceAccuracy metric
         """
         super(ExperienceAccuracy, self).__init__(
-            reset_at="experience", emit_at="experience", mode="eval"
+            reset_at="experience", emit_at="experience", mode="eval", **kwargs,
         )
 
     def __str__(self):
@@ -338,12 +338,12 @@ class StreamAccuracy(AccuracyPluginMetric):
     This metric only works at eval time.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of StreamAccuracy metric
         """
         super(StreamAccuracy, self).__init__(
-            reset_at="stream", emit_at="stream", mode="eval"
+            reset_at="stream", emit_at="stream", mode="eval", **kwargs,
         )
 
     def __str__(self):
@@ -358,13 +358,13 @@ class TrainedExperienceAccuracy(AccuracyPluginMetric):
     This metric only works at eval time.
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Creates an instance of TrainedExperienceAccuracy metric by first
         constructing AccuracyPluginMetric
         """
         super(TrainedExperienceAccuracy, self).__init__(
-            reset_at="stream", emit_at="stream", mode="eval"
+            reset_at="stream", emit_at="stream", mode="eval", **kwargs,
         )
         self._current_experience = 0
 
@@ -394,7 +394,9 @@ def accuracy_metrics(
     experience=False,
     stream=False,
     trained_experience=False,
+    **kwargs,
 ) -> List[PluginMetric]:
+
     """
     Helper method that can be used to obtain the desired set of
     plugin metrics.
@@ -417,23 +419,24 @@ def accuracy_metrics(
     """
 
     metrics = []
+
     if minibatch:
-        metrics.append(MinibatchAccuracy())
+        metrics.append(MinibatchAccuracy(**kwargs))
 
     if epoch:
-        metrics.append(EpochAccuracy())
+        metrics.append(EpochAccuracy(**kwargs))
 
     if epoch_running:
-        metrics.append(RunningEpochAccuracy())
+        metrics.append(RunningEpochAccuracy(**kwargs))
 
     if experience:
-        metrics.append(ExperienceAccuracy())
+        metrics.append(ExperienceAccuracy(**kwargs))
 
     if stream:
-        metrics.append(StreamAccuracy())
+        metrics.append(StreamAccuracy(**kwargs))
 
     if trained_experience:
-        metrics.append(TrainedExperienceAccuracy())
+        metrics.append(TrainedExperienceAccuracy(**kwargs))
 
     return metrics
 
