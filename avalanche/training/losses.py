@@ -5,6 +5,7 @@ from torch import nn
 from avalanche.training.plugins import SupervisedPlugin
 from torch.nn import BCELoss
 import numpy as np
+from avalanche.training.utils import at_task_boundary
 
 
 class ICaRLLossPlugin(SupervisedPlugin):
@@ -50,6 +51,9 @@ class ICaRLLossPlugin(SupervisedPlugin):
         return self.criterion(predictions, one_hot)
 
     def after_training_exp(self, strategy, **kwargs):
+        if not at_task_boundary(strategy.experience):
+            return
+
         if self.old_model is None:
             old_model = copy.deepcopy(strategy.model)
             self.old_model = old_model.to(strategy.device)
